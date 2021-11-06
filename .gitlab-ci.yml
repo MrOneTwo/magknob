@@ -1,0 +1,9 @@
+image: ubuntu
+
+build:
+  script:
+  # - apk add --update just make git python3 py-pip build-dependencies
+  # - just setup_toolchain
+  # - _TOOLCHAIN_PATH=`find toolchain -maxdepth 2 -name 'bin' -exec readlink -f {} \;`/ make
+  - apt update && apt install -y gcc-arm-none-eabi binutils-arm-none-eabi make git python3-pip
+  - _TOOLCHAIN_PATH='' make

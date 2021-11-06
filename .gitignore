@@ -1,0 +1,15 @@
+*.bin
+*.hex
+*.d
+*.elf
+*.map
+*.o
+*.elf
+*.su
+src/version.h
+src/mapfile
+
+.gdb_history
+itm.fifo
+tags
+toolchain/gcc-arm-none-eabi-9-2020-q2-update
