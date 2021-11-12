@@ -7,7 +7,7 @@ TOOLCHAIN_DEST_DIR := 'toolchain'
 TOOLCHAIN_PATH := REPO_PATH + "/toolchain/gcc-arm-none-eabi-9-2020-q2-update/bin"
 
 # Flash the ELF onto the target board.
-flash fw="src/pawusb.bin":
+flash fw="src/magknob.bin":
   st-flash write {{fw}} 0x08000000
 
 # Fetch the gcc-arm-none-eabi toolchain.
