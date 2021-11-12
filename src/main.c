@@ -405,12 +405,15 @@ static void controller_state_to_report(composite_report_t* const cr,
   int encoder_pos = timer_get_counter(TIM2);
   (void)encoder_pos;
   (void)cr;
-  (void)report_id;
+
+  cr->report_id = report_id;
 
   static int counter = 100;
 
   if (counter-- == 0) {
     cr->keyboard.keys_down[0] = KEYBD_A;
+    snprintf(print_buf, PRINT_BUF_SIZE, "reporting: %d\r\n", cr->keyboard.keys_down[0]);
+    TRACE_PRINT(0, print_buf);
     counter = 100;
   }
 
