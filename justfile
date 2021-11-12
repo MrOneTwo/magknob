@@ -29,7 +29,7 @@ BAUD_RATE := '2000000'
 
 # Start GDB session connected to the OpenOCD.
 dbg_client elf_file="src/pawusb.elf":
-  {{TOOLCHAIN_PATH}}/arm-none-eabi-gdb-py -ex 'target remote localhost:3333' {{elf_file}}
+  {{TOOLCHAIN_PATH}}/arm-none-eabi-gdb-py -ex 'target extended-remote localhost:3333' {{elf_file}}
 
 dbg_server_external:
   openocd -f interface/stlink-v2.cfg -f target/stm32f1x.cfg -c 'tpiu config external uart off {{CPU_CLOCK}} {{BAUD_RATE}}'
