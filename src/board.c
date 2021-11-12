@@ -43,6 +43,10 @@ static void board_setup_i2c(void)
 
 void board_init(void)
 {
+  // LED pin
+  gpio_set(GPIOC, GPIO13);
+  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13);
+
   board_setup_encoder();
   board_setup_i2c();
 }

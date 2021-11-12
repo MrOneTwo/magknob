@@ -17,6 +17,7 @@
 #include "printf.h"
 #include "board.h"
 #include "version.h"
+#include "keycodes.h"
 
 #include <string.h>
 
@@ -405,6 +406,14 @@ static void controller_state_to_report(composite_report_t* const cr,
   (void)encoder_pos;
   (void)cr;
   (void)report_id;
+
+  static int counter = 100;
+
+  if (counter-- == 0) {
+    cr->keyboard.keys_down[0] = KEYBD_A;
+    counter = 100;
+  }
+
 }
 
 // systick counter gets enabled in the hid_control_request().
