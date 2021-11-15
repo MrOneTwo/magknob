@@ -46,6 +46,8 @@ void board_init(void)
 {
   // LED pin
   rcc_periph_clock_enable(RCC_GPIOC);
+  // The Bluepill board has a pullup on the LED pin so don't set any. With open drain
+  // this should be safe as we either pull down or we're high impedance.
   //gpio_clear(GPIOC, GPIO13);
   gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO13);
 
