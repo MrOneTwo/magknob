@@ -29,7 +29,7 @@ static void board_setup_i2c(void)
 	i2c_reset(I2C1);
 	// Setup GPIO pins (output with min output speed, opendrain).
 	gpio_set_mode(GPIOB,
-	              GPIO_MODE_OUTPUT_2_MHZ,
+	              GPIO_MODE_OUTPUT_50_MHZ,
 	              GPIO_CNF_OUTPUT_ALTFN_OPENDRAIN,
 	              GPIO6 | GPIO7);
 	i2c_peripheral_disable(I2C1);
