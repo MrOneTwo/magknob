@@ -373,6 +373,40 @@ int main(void)
   while (1)
   {
     usbd_poll(usbd_dev);
+  }
+}
+
+
+
+// Reflect the USB HID report in form of a struct.
+struct composite_report_t {
+  uint8_t report_id;
+  union {
+    struct {
+      uint8_t buttons;
+      uint8_t x;
+      uint8_t y;
+    } __attribute__((packed)) mouse;
+
+    struct{
+      uint8_t modifiers;
+      uint8_t reserved;
+      uint8_t keys_down[6];
+      uint8_t leds;
+    } __attribute__((packed)) keyboard;
+  };
+} __attribute__((packed));
+typedef struct composite_report_t composite_report_t;
+
+static int encoder_pos_prev = 0;
+
+static void controller_state_to_report(composite_report_t* const cr,
+                                       const uint8_t report_id)
+{
+  int encoder_pos = timer_get_counter(TIM3);
+  (void)encoder_pos;
+  (void)cr;
+
 
   #define AS5601_I2C_ADDR (0x36)
 
@@ -411,52 +445,18 @@ int main(void)
                                         (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
     TRACE_PRINT(0, print_buf);
 
-    for (uint32_t i = 0; i < 0x200000; i++)
-    {
-      __asm__("nop");
-    }
-  }
-}
-
-
-
-// Reflect the USB HID report in form of a struct.
-struct composite_report_t {
-  uint8_t report_id;
-  union {
-    struct {
-      uint8_t buttons;
-      uint8_t x;
-      uint8_t y;
-    } __attribute__((packed)) mouse;
-
-    struct{
-      uint8_t modifiers;
-      uint8_t reserved;
-      uint8_t keys_down[6];
-      uint8_t leds;
-    } __attribute__((packed)) keyboard;
-  };
-} __attribute__((packed));
-typedef struct composite_report_t composite_report_t;
-
-static int encoder_pos_prev = 0;
-
-static void controller_state_to_report(composite_report_t* const cr,
-                                       const uint8_t report_id)
-{
-  int encoder_pos = timer_get_counter(TIM3);
-  (void)encoder_pos;
-  (void)cr;
-
   cr->report_id = report_id;
 
-  if (encoder_pos < encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_L;
+  if (data & AS5601_REG_STATUS_MD_MASK) {
+    cr->keyboard.keys_down[0] = KEYBD_A;
   }
-  else if (encoder_pos > encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_M;
-  }
+
+  // if (encoder_pos < encoder_pos_prev) {
+  //   cr->keyboard.keys_down[0] = KEYBD_L;
+  // }
+  // else if (encoder_pos > encoder_pos_prev) {
+  //   cr->keyboard.keys_down[0] = KEYBD_M;
+  // }
 
   encoder_pos_prev = encoder_pos;
 
@@ -484,5 +484,4 @@ void sys_tick_handler(void)
 
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
   systick_counter += 1;
-
 }
