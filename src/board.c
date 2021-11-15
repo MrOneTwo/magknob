@@ -13,6 +13,9 @@ static void board_setup_encoder(void)
 {
   rcc_periph_clock_enable(RCC_TIM2);
 
+  // The encoder uses two channels of one of the timer TIM2-TIM5.
+  // Those channels can be remapped using the alternate-function I/O.
+  // Check the Reference Manual p. 185 to see default mapping and alternatives.
   timer_set_period(TIM2, 1024);
   timer_slave_set_mode(TIM2, TIM_SMCR_SMS_EM3);
   timer_ic_set_input(TIM2, TIM_IC1, TIM_IC_IN_TI1);
