@@ -6,21 +6,19 @@
 #include <libopencm3/stm32/i2c.h>
 
 
-#define AS5601_I2C_ADDR (0x36)
-
 
 static void board_setup_encoder(void)
 {
-  rcc_periph_clock_enable(RCC_TIM2);
+  rcc_periph_clock_enable(RCC_TIM3);
 
   // The encoder uses two channels of one of the timer TIM2-TIM5.
   // Those channels can be remapped using the alternate-function I/O.
   // Check the Reference Manual p. 185 to see default mapping and alternatives.
-  timer_set_period(TIM2, 1024);
-  timer_slave_set_mode(TIM2, TIM_SMCR_SMS_EM3);
-  timer_ic_set_input(TIM2, TIM_IC1, TIM_IC_IN_TI1);
-  timer_ic_set_input(TIM2, TIM_IC2, TIM_IC_IN_TI2);
-  timer_enable_counter(TIM2);
+  timer_set_period(TIM3, 1024);
+  timer_slave_set_mode(TIM3, TIM_SMCR_SMS_EM3);
+  timer_ic_set_input(TIM3, TIM_IC3, TIM_IC_IN_TI3);
+  timer_ic_set_input(TIM3, TIM_IC4, TIM_IC_IN_TI4);
+  timer_enable_counter(TIM3);
 }
 
 static void board_setup_i2c(void)
@@ -47,8 +45,9 @@ static void board_setup_i2c(void)
 void board_init(void)
 {
   // LED pin
-  gpio_set(GPIOC, GPIO13);
-  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, GPIO13);
+  rcc_periph_clock_enable(RCC_GPIOC);
+  //gpio_clear(GPIOC, GPIO13);
+  gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_OPENDRAIN, GPIO13);
 
   board_setup_encoder();
   board_setup_i2c();

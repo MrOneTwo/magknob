@@ -398,6 +398,7 @@ struct composite_report_t {
 } __attribute__((packed));
 typedef struct composite_report_t composite_report_t;
 
+// static int encoder_pos_prev = 0;
 
 static void controller_state_to_report(composite_report_t* const cr,
                                        const uint8_t report_id)
@@ -407,6 +408,28 @@ static void controller_state_to_report(composite_report_t* const cr,
   (void)cr;
 
   cr->report_id = report_id;
+
+#define AS5601_I2C_ADDR (0x36)
+
+  // uint8_t data = 0;
+  #define AS5601_REG_STATUS 0x0B
+
+  // const uint8_t reg = AS5601_REG_STATUS;
+
+  // i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
+
+  // if (data != 0) {
+  //   encoder_pos = 99;
+  // }
+
+  // if (encoder_pos < encoder_pos_prev) {
+  //   cr->keyboard.keys_down[0] = KEYBD_L;
+  // }
+  // else if (encoder_pos > encoder_pos_prev) {
+  //   cr->keyboard.keys_down[0] = KEYBD_M;
+  // }
+
+  // encoder_pos_prev = encoder_pos;
 
   static int counter = 100;
 
@@ -430,5 +453,6 @@ void sys_tick_handler(void)
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
   systick_counter += 1;
 
+  if (systick_counter % 100 == 0)
   gpio_toggle(GPIOC, GPIO13);
 }
