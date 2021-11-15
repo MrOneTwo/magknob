@@ -312,6 +312,7 @@ static uint32_t systick_counter = 0;
 static void setup_clock(void)
 {
   // usbd.h says 'It is required that the 48MHz USB clock is already available.'
+  // The clock configurations are set in the rcc.c.
   rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
 
   systick_set_clocksource(STK_CSR_CLKSOURCE_AHB_DIV8);
@@ -330,7 +331,7 @@ int main(void)
   // OpenOCD's core frequency to 8000000.
   setup_clock();
   board_init();
-  snprintf(print_buf, PRINT_BUF_SIZE, "\r\n--- PAW USB %s ---\r\n", FIRMWARE_VERSION);
+  snprintf(print_buf, PRINT_BUF_SIZE, "\r\n--- magknob %s ---\r\n", FIRMWARE_VERSION);
   TRACE_PRINT(0, print_buf);
 
   ////////////////////////
@@ -374,14 +375,51 @@ int main(void)
     usbd_poll(usbd_dev);
 
   #define AS5601_I2C_ADDR (0x36)
-  #define AS5601_REG_STATUS 0x0B
 
-    const uint8_t reg = AS5601_REG_STATUS;
+  #define AS5601_REG_ZMCO   (0x0)
+  #define AS5601_REG_CONF   (0x7)
+  #define AS5601_REG_ABN    (0x9)
+  #define AS5601_REG_STATUS (0xB)
+  #define AS5601_REG_AGC 0x1A
+
+  #define AS5601_REG_STATUS_MH_MASK (0b001000)
+  #define AS5601_REG_STATUS_ML_MASK (0b010000)
+  #define AS5601_REG_STATUS_MD_MASK (0b100000)
+
+  #define AS5601_REG_ABN_8    (0b0000)
+  #define AS5601_REG_ABN_16   (0b0001)
+  #define AS5601_REG_ABN_32   (0b0010)
+  #define AS5601_REG_ABN_64   (0b0011)
+  #define AS5601_REG_ABN_128  (0b0100)
+  #define AS5601_REG_ABN_256  (0b0101)
+  #define AS5601_REG_ABN_512  (0b0110)
+  #define AS5601_REG_ABN_1024 (0b0111)
+  #define AS5601_REG_ABN_2048 (0b1000)
+
+    uint8_t reg = AS5601_REG_STATUS;
     uint8_t data = 0;
 
     i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
-  }
 
+    snprintf(print_buf, PRINT_BUF_SIZE, "0x%X == 0x%X\r\n"
+                                        "  MH: %s (mag too strong)\r\n"
+                                        "  ML: %s (mag too weak)\r\n"
+                                        "  MD: %s (mag detected)\r\n",
+                                        reg, data,
+                                        (data & AS5601_REG_STATUS_MH_MASK) ? "1" : "0",
+                                        (data & AS5601_REG_STATUS_ML_MASK) ? "1" : "0",
+                                        (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
+    TRACE_PRINT(0, print_buf);
+
+    uint8_t reg = AS5601_REG_ZMCO;
+    data = 0;
+    i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
+
+    for (uint32_t i = 0; i < 0x200000; i++)
+    {
+      __asm__("nop");
+    }
+  }
 }
 
 
@@ -416,10 +454,6 @@ static void controller_state_to_report(composite_report_t* const cr,
   (void)cr;
 
   cr->report_id = report_id;
-
-  // if (data != 0) {
-  //   encoder_pos = 99;
-  // }
 
   if (encoder_pos < encoder_pos_prev) {
     cr->keyboard.keys_down[0] = KEYBD_L;
