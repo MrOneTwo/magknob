@@ -411,10 +411,6 @@ int main(void)
                                         (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
     TRACE_PRINT(0, print_buf);
 
-    uint8_t reg = AS5601_REG_ZMCO;
-    data = 0;
-    i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
-
     for (uint32_t i = 0; i < 0x200000; i++)
     {
       __asm__("nop");
