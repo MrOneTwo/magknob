@@ -60,3 +60,7 @@ void board_init(void)
   board_setup_i2c();
 }
 
+int board_encoder_get_counter(void)
+{
+  return timer_get_counter(TIM3);
+}

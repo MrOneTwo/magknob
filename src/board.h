@@ -3,5 +3,6 @@
 
 
 void board_init(void);
+int board_encoder_get_counter(void);
 
 #endif // BOARD_H
