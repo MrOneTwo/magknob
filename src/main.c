@@ -388,7 +388,7 @@ struct composite_report_t {
       uint8_t y;
     } __attribute__((packed)) mouse;
 
-    struct{
+    struct {
       uint8_t modifiers;
       uint8_t reserved;
       uint8_t keys_down[6];
