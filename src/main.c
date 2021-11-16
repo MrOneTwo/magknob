@@ -414,28 +414,30 @@ static void controller_state_to_report(composite_report_t* const cr,
 
     i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
 
-    snprintf(print_buf, PRINT_BUF_SIZE, "0x%X == 0x%X\r\n"
-                                        "  MH: %s (mag too strong)\r\n"
-                                        "  ML: %s (mag too weak)\r\n"
-                                        "  MD: %s (mag detected)\r\n",
-                                        reg, data,
-                                        (data & AS5601_REG_STATUS_MH_MASK) ? "1" : "0",
-                                        (data & AS5601_REG_STATUS_ML_MASK) ? "1" : "0",
-                                        (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
+    snprintf(print_buf, PRINT_BUF_SIZE, "encoder_pos %d\r\n", encoder_pos);
+
+    // snprintf(print_buf, PRINT_BUF_SIZE, "0x%X == 0x%X\r\n"
+    //                                     "  MH: %s (mag too strong)\r\n"
+    //                                     "  ML: %s (mag too weak)\r\n"
+    //                                     "  MD: %s (mag detected)\r\n",
+    //                                     reg, data,
+    //                                     (data & AS5601_REG_STATUS_MH_MASK) ? "1" : "0",
+    //                                     (data & AS5601_REG_STATUS_ML_MASK) ? "1" : "0",
+    //                                     (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
     TRACE_PRINT(0, print_buf);
 
   cr->report_id = report_id;
 
-  if (data & AS5601_REG_STATUS_MD_MASK) {
-    cr->keyboard.keys_down[0] = KEYBD_A;
-  }
+  // if (data & AS5601_REG_STATUS_MD_MASK) {
+  //   cr->keyboard.keys_down[0] = KEYBD_A;
+  // }
 
-  // if (encoder_pos < encoder_pos_prev) {
-  //   cr->keyboard.keys_down[0] = KEYBD_L;
-  // }
-  // else if (encoder_pos > encoder_pos_prev) {
-  //   cr->keyboard.keys_down[0] = KEYBD_M;
-  // }
+  if (encoder_pos < encoder_pos_prev) {
+    cr->keyboard.keys_down[0] = KEYBD_L;
+  }
+  else if (encoder_pos > encoder_pos_prev) {
+    cr->keyboard.keys_down[0] = KEYBD_M;
+  }
 
   encoder_pos_prev = encoder_pos;
 
