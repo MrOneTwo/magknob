@@ -135,8 +135,10 @@
   0x7D Keyboard Paste
   0x7E Keyboard Find
   0x7F Keyboard Mute
-  0x80 Keyboard Volume Up
-  0x81 Keyboard Volume Down
+  */
+#define KEYBD_VOL_UP            (0x80)
+#define KEYBD_VOL_DOWN          (0x81)
+  /*
   0x82 Keyboard Locking Caps Lock
   0x83 Keyboard Locking Num Lock
   0x84 Keyboard Locking Scroll Lock

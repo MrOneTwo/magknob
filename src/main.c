@@ -433,10 +433,10 @@ static void controller_state_to_report(composite_report_t* const cr,
   // }
 
   if (encoder_pos < encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_L;
+    cr->keyboard.keys_down[0] = KEYBD_VOL_DOWN;
   }
   else if (encoder_pos > encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_M;
+    cr->keyboard.keys_down[0] = KEYBD_VOL_UP;
   }
 
   encoder_pos_prev = encoder_pos;
