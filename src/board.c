@@ -20,7 +20,7 @@ static void board_setup_encoder(void)
   // The encoder uses two channels of one of the timer TIM2-TIM5.
   // Those channels can be remapped using the alternate-function I/O.
   // Check the Reference Manual p. 185 to see default mapping and alternatives.
-  timer_set_period(TIM3, 2048);
+  timer_set_period(TIM3, ENCODER_WRAP_VALUE);
   timer_slave_set_mode(TIM3, TIM_SMCR_SMS_EM3);
   timer_ic_set_input(TIM3, TIM_IC1, TIM_IC_IN_TI1);
   timer_ic_set_input(TIM3, TIM_IC2, TIM_IC_IN_TI2);

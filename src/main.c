@@ -430,15 +430,19 @@ static void controller_state_to_report(composite_report_t* const cr)
   // }
 
   if (encoder_pos < encoder_pos_prev) {
-    snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
-    TRACE_PRINT(0, print_buf);
+    //snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
+    //TRACE_PRINT(0, print_buf);
 
     cr->media.mask = 0x20;
   }
   else if (encoder_pos > encoder_pos_prev) {
-    snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
-    TRACE_PRINT(0, print_buf);
+    //snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
+    //TRACE_PRINT(0, print_buf);
 
+    cr->media.mask = 0x40;
+  }
+
+  if (encoder_pos_prev == ENCODER_WRAP_VALUE && encoder_pos == 0) {
     cr->media.mask = 0x40;
   }
 
