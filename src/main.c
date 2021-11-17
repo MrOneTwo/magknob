@@ -433,13 +433,13 @@ static void controller_state_to_report(composite_report_t* const cr)
     snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
     TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = 0x40;
+    cr->media.mask = 0x20;
   }
   else if (encoder_pos > encoder_pos_prev) {
     snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
     TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = 0x20;
+    cr->media.mask = 0x40;
   }
 
   encoder_pos_prev = encoder_pos;
