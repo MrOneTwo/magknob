@@ -331,7 +331,7 @@ int main(void)
   TRACE_PRINT(0, print_buf);
 
   // Init the knob's sensitivity.
-  const uint8_t data[2] = {AS5601_REG_ABN, AS5601_REG_ABN_16};
+  const uint8_t data[2] = {AS5601_REG_ABN, AS5601_REG_ABN_32};
   i2c_transfer7(I2C1, AS5601_I2C_ADDR, &data[0], 2, NULL, 0);
 
   ////////////////////////
@@ -442,8 +442,12 @@ static void controller_state_to_report(composite_report_t* const cr)
     cr->media.mask = 0x40;
   }
 
+  // Reverse behavior for two edge cases.
   if (encoder_pos_prev == ENCODER_WRAP_VALUE && encoder_pos == 0) {
     cr->media.mask = 0x40;
+  }
+  else if (encoder_pos_prev == 0 && encoder_pos == ENCODER_WRAP_VALUE) {
+    cr->media.mask = 0x20;
   }
 
   encoder_pos_prev = encoder_pos;
