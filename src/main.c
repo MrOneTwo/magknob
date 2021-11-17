@@ -127,34 +127,29 @@ const struct usb_device_descriptor dev_descr = {
 };
 
 static const uint8_t hid_report_descriptor[] = {
-  0x05, 0x01, /* USAGE_PAGE (Generic Desktop)       */
-
-  0x09, 0x06, /* USAGE (Mouse)                      */
-  0xa1, 0x01, /* COLLECTION (Application)           */
+  0x05, 0x0C, /* USAGE_PAGE (Consumer Device)       */
+  0x09, 0x01, /* USAGE (Consumer Control)           */
+  0xA1, 0x01, /* COLLECTION (Application)           */
   0x85, 0x01, /*   REPORT_ID (1)                    */
-              /*   Buttons                          */
-  0x05, 0x09, /*   USAGE_PAGE (Buttons)             */
-  0x19, 0x01, /*   USAGE_MINIMUM ()                 */
-  0x29, 0x03, /*   USAGE_MAXIMUM ()                 */
-  0x15, 0x00, /*   LOGICAL_MINIMUM (0)              */
-  0x25, 0x01, /*   LOGICAL_MAXIMUM (1)              */
-  0x95, 0x03, /*   REPORT_COUNT (3)                 */
-  0x75, 0x01, /*   REPORT_SIZE (1)                  */
-  0x81, 0x02, /*   INPUT (Data,Variable,Absolute)   */
-  0x95, 0x01, /*   REPORT_COUNT (1)                 */
-  0x75, 0x05, /*   REPORT_SIZE (5)                  */
+  0x05, 0x0C, /*   Usage Page (Consumer Devices)    */
+  0x15, 0x00, /*   Logical Minimum (0)              */
+  0x25, 0x01, /*   Logical Maximum (1)              */
+  0x75, 0x01, /*   Report Size (1)                  */
+  0x95, 0x07, /*   Report Count (7)                 */
+  0x09, 0xB5, /*   Usage (Scan Next Track)          */
+  0x09, 0xB6, /*   Usage (Scan Previous Track)      */
+  0x09, 0xB7, /*   Usage (Stop)                     */
+  0x09, 0xCD, /*   Usage (Play / Pause)             */
+  0x09, 0xE2, /*   Usage (Mute)                     */
+  0x09, 0xE9, /*   Usage (Volume Up)                */
+  0x09, 0xEA, /*   Usage (Volume Down)              */
+  0x81, 0x02, /*   Input (Data, Variable, Absolute  */
+  0x75, 0x01, /*   Report Size (1)                  */
+  0x95, 0x01, /*   Report Count (1)                 */
   0x81, 0x01, /*   INPUT (Constant)                 */
-              /*   Pointer                          */
-  0x05, 0x01, /*   USAGE_PAGE (Generic Desktop)     */
-  0x09, 0x30, /*   USAGE (X)                        */
-  0x09, 0x31, /*   USAGE (Y)                        */
-  0x15, 0x81, /*   LOGICAL_MINIMUM (-127)           */
-  0x25, 0x7f, /*   LOGICAL_MAXIMUM (127)            */
-  0x95, 0x02, /*   REPORT_COUNT (2)                 */
-  0x75, 0x08, /*   REPORT_SIZE (8)                  */
-  0x81, 0x06, /*   INPUT (Data,Variable,Relative)   */
   0xc0,       /* END_COLLECTION                     */
 
+  0x05, 0x01, /* USAGE_PAGE (Generic Desktop)       */
   0x09, 0x06, /* USAGE (Keyboard)                   */
   0xa1, 0x01, /* COLLECTION (Application)           */
   0x85, 0x02, /*   REPORT_ID (2)                    */
@@ -335,6 +330,10 @@ int main(void)
   snprintf(print_buf, PRINT_BUF_SIZE, "\r\n--- magknob %s ---\r\n", FIRMWARE_VERSION);
   TRACE_PRINT(0, print_buf);
 
+  // Init the knob's sensitivity.
+  const uint8_t data[2] = {AS5601_REG_ABN, AS5601_REG_ABN_32};
+  i2c_transfer7(I2C1, AS5601_I2C_ADDR, &data[0], 2, NULL, 0);
+
   ////////////////////////
   //
   //  USB (PA12 - D+, PA11 - D-)
@@ -384,10 +383,8 @@ struct composite_report_t {
   uint8_t report_id;
   union {
     struct {
-      uint8_t buttons;
-      uint8_t x;
-      uint8_t y;
-    } __attribute__((packed)) mouse;
+      uint8_t mask;
+    } __attribute__((packed)) media;
 
     struct {
       uint8_t modifiers;
@@ -401,8 +398,7 @@ typedef struct composite_report_t composite_report_t;
 
 static int encoder_pos_prev = 0;
 
-static void controller_state_to_report(composite_report_t* const cr,
-                                       const uint8_t report_id)
+static void controller_state_to_report(composite_report_t* const cr)
 {
   int encoder_pos = board_encoder_get_counter();
   (void)encoder_pos;
@@ -414,7 +410,6 @@ static void controller_state_to_report(composite_report_t* const cr,
 
     i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
 
-    snprintf(print_buf, PRINT_BUF_SIZE, "encoder_pos %d\r\n", encoder_pos);
 
     // snprintf(print_buf, PRINT_BUF_SIZE, "0x%X == 0x%X\r\n"
     //                                     "  MH: %s (mag too strong)\r\n"
@@ -424,19 +419,27 @@ static void controller_state_to_report(composite_report_t* const cr,
     //                                     (data & AS5601_REG_STATUS_MH_MASK) ? "1" : "0",
     //                                     (data & AS5601_REG_STATUS_ML_MASK) ? "1" : "0",
     //                                     (data & AS5601_REG_STATUS_MD_MASK) ? "1" : "0");
-    TRACE_PRINT(0, print_buf);
 
-  cr->report_id = report_id;
+    //snprintf(print_buf, PRINT_BUF_SIZE, "encoder_pos cur:prev %d:%d\r\n", encoder_pos, encoder_pos_prev);
+    //TRACE_PRINT(0, print_buf);
+
+  cr->report_id = 1;
 
   // if (data & AS5601_REG_STATUS_MD_MASK) {
   //   cr->keyboard.keys_down[0] = KEYBD_A;
   // }
 
   if (encoder_pos < encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_VOL_DOWN;
+    snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
+    TRACE_PRINT(0, print_buf);
+
+    cr->media.mask = 0x40;
   }
   else if (encoder_pos > encoder_pos_prev) {
-    cr->keyboard.keys_down[0] = KEYBD_VOL_UP;
+    snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
+    TRACE_PRINT(0, print_buf);
+
+    cr->media.mask = 0x20;
   }
 
   encoder_pos_prev = encoder_pos;
@@ -461,8 +464,10 @@ void sys_tick_handler(void)
 
   // Translate the hardware state into a HID report.
   composite_report_t report = {};
-  controller_state_to_report(&report, 2U);
+  controller_state_to_report(&report);
 
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
+
+
   systick_counter += 1;
 }
