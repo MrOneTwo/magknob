@@ -377,7 +377,6 @@ int main(void)
 }
 
 
-
 // Reflect the USB HID report in form of a struct.
 struct composite_report_t {
   uint8_t report_id;
@@ -398,17 +397,21 @@ typedef struct composite_report_t composite_report_t;
 
 static int encoder_pos_prev = 0;
 
+#define MEDIA_MASK_VOL_DOWN (0x40)
+#define MEDIA_MASK_VOL_UP   (0x20)
+
 static void controller_state_to_report(composite_report_t* const cr)
 {
   int encoder_pos = board_encoder_get_counter();
   (void)encoder_pos;
   (void)cr;
 
+  // TODO(michalc): move this out from here
+  {
+    // uint8_t reg = AS5601_REG_STATUS;
+    // uint8_t data = 0;
 
-    uint8_t reg = AS5601_REG_STATUS;
-    uint8_t data = 0;
-
-    i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
+    // i2c_transfer7(I2C1, AS5601_I2C_ADDR, &reg, 1, &data, 1);
 
 
     // snprintf(print_buf, PRINT_BUF_SIZE, "0x%X == 0x%X\r\n"
@@ -422,45 +425,32 @@ static void controller_state_to_report(composite_report_t* const cr)
 
     //snprintf(print_buf, PRINT_BUF_SIZE, "encoder_pos cur:prev %d:%d\r\n", encoder_pos, encoder_pos_prev);
     //TRACE_PRINT(0, print_buf);
+  }
 
   cr->report_id = 1;
-
-  // if (data & AS5601_REG_STATUS_MD_MASK) {
-  //   cr->keyboard.keys_down[0] = KEYBD_A;
-  // }
 
   if (encoder_pos < encoder_pos_prev) {
     //snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
     //TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = 0x20;
+    cr->media.mask = MEDIA_MASK_VOL_UP;
   }
   else if (encoder_pos > encoder_pos_prev) {
     //snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
     //TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = 0x40;
+    cr->media.mask = MEDIA_MASK_VOL_DOWN;
   }
 
   // Reverse behavior for two edge cases.
   if (encoder_pos_prev == ENCODER_WRAP_VALUE && encoder_pos == 0) {
-    cr->media.mask = 0x40;
+    cr->media.mask = MEDIA_MASK_VOL_DOWN;
   }
   else if (encoder_pos_prev == 0 && encoder_pos == ENCODER_WRAP_VALUE) {
-    cr->media.mask = 0x20;
+    cr->media.mask = MEDIA_MASK_VOL_UP;
   }
 
   encoder_pos_prev = encoder_pos;
-
-  // static int counter = 100;
-
-  // if (counter-- == 0) {
-  //   cr->keyboard.keys_down[0] = KEYBD_A;
-  //   snprintf(print_buf, PRINT_BUF_SIZE, "reporting: %d\r\n", cr->keyboard.keys_down[0]);
-  //   TRACE_PRINT(0, print_buf);
-  //   counter = 100;
-  // }
-
 }
 
 // systick counter gets enabled in the hid_control_request().
@@ -475,7 +465,6 @@ void sys_tick_handler(void)
   controller_state_to_report(&report);
 
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
-
 
   systick_counter += 1;
 }

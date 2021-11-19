@@ -136,6 +136,7 @@
   0x7E Keyboard Find
   0x7F Keyboard Mute
   */
+  // TODO(michalc): I'm not sure what those are. That's not how you use volume up and down.
 #define KEYBD_VOL_UP            (0x80)
 #define KEYBD_VOL_DOWN          (0x81)
   /*
