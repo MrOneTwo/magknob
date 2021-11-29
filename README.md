@@ -8,6 +8,13 @@ You can download [OpenSCAD designed models for 3D printing](https://git.sr.ht/~m
 
 ## Building this project
 
+Dependencies:
+
+- wget
+- [just](https://github.com/casey/just)
+- [stlink](https://github.com/stlink-org/stlink)
+- [OpenOCD](https://openocd.org/)
+
 The quickest way is to use *just*:
 
 ```sh
