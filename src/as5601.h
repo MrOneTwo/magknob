@@ -36,6 +36,19 @@
 #define AS5601_REG_VAL_ABN_2048 (0b1000)
 
 
+/*
+ * Set the count of impulses per rotation that the AS5601 generates.
+ */
 void as5601_set_impulses_per_rotation(const uint8_t val);
+
+/*
+ * Returns a raw (unscaled, unmodified) angle, value of 0-4095
+ */
+int16_t as5601_get_raw_angle(void);
+
+/*
+ * Returns an angle (scaled, modified) angle, value of 0-4095
+ */
+int16_t as5601_get_angle(void);
 
 #endif // AS5601_H
