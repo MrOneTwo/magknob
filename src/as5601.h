@@ -5,11 +5,21 @@
 
 #define AS5601_I2C_ADDR (0x36)
 
-#define AS5601_REG_ZMCO   (0x0)
-#define AS5601_REG_CONF   (0x7)
-#define AS5601_REG_ABN    (0x9)
-#define AS5601_REG_STATUS (0xB)
-#define AS5601_REG_AGC 0x1A
+// Configuration registers
+#define AS5601_REG_ZMCO      (0x00)
+#define AS5601_REG_ZPOS      (0x01)
+#define AS5601_REG_CONF      (0x07)
+#define AS5601_REG_ABN       (0x09)
+#define AS5601_REG_PUSHTHR   (0x0A)
+
+// Output registers (read only)
+#define AS5601_REG_RAW_ANGLE (0x0C)
+#define AS5601_REG_ANGLE     (0x0E)
+
+// Status registers (read only)
+#define AS5601_REG_STATUS    (0x0B)
+#define AS5601_REG_AGC       (0x1A)
+#define AS5601_REG_MAGNITUDE (0x1B)
 
 #define AS5601_REG_STATUS_MH_MASK (0b001000)
 #define AS5601_REG_STATUS_ML_MASK (0b010000)
