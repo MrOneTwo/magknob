@@ -2,7 +2,7 @@ REPO_PATH := `git rev-parse --show-toplevel`
 
 TOOLCHAIN_URL := 'https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2?revision=05382cca-1721-44e1-ae19-1e7c3dc96118&la=en&hash=D7C9D18FCA2DD9F894FD9F3C3DC9228498FA281A'
 TOOLCHAIN_ARCHIVE_NAME := 'tc.tar.bz2'
-TOOLCHAIN_DEST_DIR := 'toolchain'
+TOOLCHAIN_DEST_DIR := REPO_PATH + '/toolchain'
 
 TOOLCHAIN_PATH := REPO_PATH + "/toolchain/gcc-arm-none-eabi-9-2020-q2-update/bin"
 
