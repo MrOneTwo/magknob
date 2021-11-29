@@ -331,6 +331,7 @@ int main(void)
   TRACE_PRINT(0, print_buf);
 
   as5601_set_impulses_per_rotation(AS5601_REG_VAL_ABN_32);
+  as5601_set_watchdog(true);
 
   ////////////////////////
   //

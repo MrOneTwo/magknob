@@ -2,6 +2,8 @@
 #define AS5601_H
 
 #include <stdint.h>
+#include <stdbool.h>
+
 
 #define AS5601_I2C_ADDR (0x36)
 
@@ -46,6 +48,8 @@
  * Set the count of impulses per rotation that the AS5601 generates.
  */
 void as5601_set_impulses_per_rotation(const uint8_t val);
+
+void as5601_set_watchdog(const bool onoff);
 
 /*
  * Returns a raw (unscaled, unmodified) angle, value of 0-4095

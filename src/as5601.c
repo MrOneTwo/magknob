@@ -34,6 +34,19 @@ void as5601_set_impulses_per_rotation(const uint8_t val)
   return;
 }
 
+void as5601_set_watchdog(const bool onoff)
+{
+  uint8_t data[3] = {AS5601_REG_CONF, 0, 0};
+
+  if (onoff == true) {
+    data[1] = AS5601_REG_CONF_WD_MASK;
+  }
+
+  i2c_transfer7(I2C1, AS5601_I2C_ADDR, &data[0], sizeof(data), NULL, 0);
+
+  return;
+}
+
 int16_t as5601_get_raw_angle(void)
 {
   return read_2byte_reg(AS5601_REG_RAW_ANGLE);
