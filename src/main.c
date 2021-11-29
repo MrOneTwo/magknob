@@ -330,9 +330,7 @@ int main(void)
   snprintf(print_buf, PRINT_BUF_SIZE, "\r\n--- magknob %s ---\r\n", FIRMWARE_VERSION);
   TRACE_PRINT(0, print_buf);
 
-  // Init the knob's sensitivity.
-  const uint8_t data[2] = {AS5601_REG_ABN, AS5601_REG_ABN_32};
-  i2c_transfer7(I2C1, AS5601_I2C_ADDR, &data[0], 2, NULL, 0);
+  as5601_set_impulses_per_rotation(AS5601_REG_VAL_ABN_32);
 
   ////////////////////////
   //

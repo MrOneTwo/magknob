@@ -10,6 +10,7 @@ SRC :=
 SRC += board.c
 SRC += printf.c
 SRC += main.c
+SRC += as5601.c
 
 OBJ = $(SRC:.c=.o)
 
