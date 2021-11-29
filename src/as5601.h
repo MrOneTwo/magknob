@@ -21,6 +21,12 @@
 #define AS5601_REG_AGC       (0x1A)
 #define AS5601_REG_MAGNITUDE (0x1B)
 
+#define AS5601_REG_CONF_SF_MASK   (0b00000011)
+#define AS5601_REG_CONF_FTH_MASK  (0b00011100)
+#define AS5601_REG_CONF_WD_MASK   (0b00100000)
+#define AS5601_REG_CONF_PM_MASK   (0b00000011 << 8)
+#define AS5601_REG_CONF_HYST_MASK (0b00001100 << 8)
+
 #define AS5601_REG_STATUS_MH_MASK (0b001000)
 #define AS5601_REG_STATUS_ML_MASK (0b010000)
 #define AS5601_REG_STATUS_MD_MASK (0b100000)
@@ -50,5 +56,9 @@ int16_t as5601_get_raw_angle(void);
  * Returns an angle (scaled, modified) angle, value of 0-4095
  */
 int16_t as5601_get_angle(void);
+
+int16_t as5601_get_conf(void);
+
+const char* as5601_get_conf_reg_print_format(void);
 
 #endif // AS5601_H
