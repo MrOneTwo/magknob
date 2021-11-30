@@ -19,6 +19,7 @@
 #include "version.h"
 #include "keycodes.h"
 #include "as5601.h"
+#include "profiling.h"
 
 #include <string.h>
 
@@ -38,8 +39,10 @@ uint32_t str_len(const char *str)
   trace_write_str(port, msg, str_len(msg)); \
 }
 
+// This has to be aligned for better ITM performance - CPU can push up to 4 bytes at once into the
+// ITM's buffer but that requires the buffer to be aligned.
 #define PRINT_BUF_SIZE (128)
-char print_buf[PRINT_BUF_SIZE];
+char print_buf[PRINT_BUF_SIZE] __attribute__((aligned(4)));
 
 /*
 static void itm_init(void)
