@@ -60,3 +60,39 @@ void trace_write_str(const uint8_t port, const char* const s, uint32_t s_len)
     trace_write_char(port, *(s + i));
   }
 }
+
+
+/*
+ * I don't think it's possible to enable ITM without the host side debugger but
+ * maybe one day I'll find a solution. I want this to be able to connect the
+ * external UART and have the output without starting OpenOCD.
+ */
+/*
+static void itm_init(void)
+{
+  // Enable trace subsystem (ITM and TPIU).
+  SCS_DEMCR |= SCS_DEMCR_TRCENA;
+
+  // NRZ encoding code for async transmission.
+  TPIU_SPPR = TPIU_SPPR_ASYNC_NRZ;
+
+  // Formatter and flash control.
+  TPIU_FFCR &= ~TPIU_FFCR_ENFCONT;
+
+  // NOTE(michalc): the reference manual (p.1103) says that the TRACE_IOEN and TRACE_MODE
+  // should be set by the host side debugger. Does that mean you can't fully configure
+  // ITM without starting OpenOCD?
+  // Enable TRACESWO pin for async mode (no clock pin).
+  DBGMCU_CR = DBGMCU_CR_TRACE_IOEN | DBGMCU_CR_TRACE_MODE_ASYNC;
+
+  // Unlock access to the ITM registers. You can't configure them without first
+  // unlocking the access.
+  ITM_LAR = CORESIGHT_LAR_KEY;
+
+  // Set the source ID to 1 (7 bits 16-22 encode ID) and enable ITM.
+  ITM_TCR = (1 << 16) | ITM_TCR_ITMENA;
+  // Enable the stimulus port.
+  const uint8_t port = 0;
+  ITM_TER[0] = (1 << port);
+}
+*/
