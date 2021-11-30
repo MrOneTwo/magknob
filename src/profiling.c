@@ -13,6 +13,11 @@ uint32_t read_cycle_counter(void)
   return DWT_CYCCNT;
 }
 
+/*
+ * This can be done OpenOCD + GDB (or telnet without `monitor`) side:
+ *   monitor mww 0xE0001000 0x1207 0x103FF
+ *   monitor itm port 0 on
+ */
 void dwt_pcsampler_enable(void)
 {
   // This needs to take into account the speed of the debug adapter.
