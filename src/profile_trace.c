@@ -44,6 +44,9 @@ void dwt_pcsampler_disable(void)
 
 static void trace_write_char(const uint8_t port, const char c)
 {
+  // TODO(michalc): this doesn't take advantage of the fact that you can drop 4 bytes into
+  // ITM register at once. You can change the ITM_STIM8 to ITM_STIM32 but you need to handle tail
+  // correctly.
   // Check if the port is enabled.
   if (!(ITM_TER[0] & (1 << port)))
   {
