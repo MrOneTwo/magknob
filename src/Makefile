@@ -11,7 +11,7 @@ SRC += board.c
 SRC += printf.c
 SRC += main.c
 SRC += as5601.c
-SRC += profiling.c
+SRC += profile_trace.c
 
 OBJ = $(SRC:.c=.o)
 

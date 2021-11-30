@@ -1,5 +1,6 @@
-#include "profiling.h"
+#include "profile_trace.h"
 
+#include <libopencm3/cm3/itm.h>
 #include <libopencm3/cm3/dwt.h>
 
 
@@ -39,4 +40,23 @@ void dwt_pcsampler_disable(void)
   DWT_CTRL &= ~DWT_CTRL_CYCTAP;
   // Disable PC sampling event.
   DWT_CTRL &= ~DWT_CTRL_PCSAMPLENA;
+}
+
+static void trace_write_char(const uint8_t port, const char c)
+{
+  // Check if the port is enabled.
+  if (!(ITM_TER[0] & (1 << port)))
+  {
+    return;
+  }
+  while (!(ITM_STIM8(port) & ITM_STIM_FIFOREADY));
+  ITM_STIM8(port) = c;
+}
+
+void trace_write_str(const uint8_t port, const char* const s, uint32_t s_len)
+{
+  for (uint32_t i = 0; i < s_len; i++)
+  {
+    trace_write_char(port, *(s + i));
+  }
 }

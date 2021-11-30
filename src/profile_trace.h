@@ -1,5 +1,5 @@
-#ifndef PROFILING_H
-#define PROFILING_H
+#ifndef PROFILE_TRACE_H
+#define PROFILE_TRACE_H
 
 #include <stdint.h>
 
@@ -31,4 +31,14 @@ void dwt_pcsampler_disable(void);
     dwt_pcsampler_disable();  \
   }
 
-#endif // PROFILING_H
+// TRACING
+
+#define TRACE_PRINT(port, string) \
+{ \
+  char* msg __attribute__((aligned(4))) = string; \
+  trace_write_str(port, msg, str_len(msg)); \
+}
+
+void trace_write_str(const uint8_t port, const char* const s, uint32_t s_len);
+
+#endif // PROFILE_TRACE_H

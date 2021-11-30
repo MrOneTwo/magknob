@@ -1,4 +1,3 @@
-#include <libopencm3/cm3/itm.h>
 #include <libopencm3/cm3/memorymap.h>
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/scs.h>
@@ -19,7 +18,7 @@
 #include "version.h"
 #include "keycodes.h"
 #include "as5601.h"
-#include "profiling.h"
+#include "profile_trace.h"
 
 #include <string.h>
 
@@ -31,12 +30,6 @@ void _putchar(char c)
 uint32_t str_len(const char *str)
 {
   return (*str) ? str_len(++str) + 1 : 0;
-}
-
-#define TRACE_PRINT(port, string) \
-{ \
-  char* msg __attribute__((aligned(4))) = string; \
-  trace_write_str(port, msg, str_len(msg)); \
 }
 
 // This has to be aligned for better ITM performance - CPU can push up to 4 bytes at once into the
@@ -73,25 +66,6 @@ static void itm_init(void)
   ITM_TER[0] = (1 << port);
 }
 */
-
-static void trace_write_char(const uint8_t port, const char c)
-{
-  // Check if the port is enabled.
-  if (!(ITM_TER[0] & (1 << port)))
-  {
-    return;
-  }
-  while (!(ITM_STIM8(port) & ITM_STIM_FIFOREADY));
-  ITM_STIM8(port) = c;
-}
-
-static void trace_write_str(const uint8_t port, const char* const s, uint32_t s_len)
-{
-  for (uint32_t i = 0; i < s_len; i++)
-  {
-    trace_write_char(port, *(s + i));
-  }
-}
 
 
 ////////////////////////
