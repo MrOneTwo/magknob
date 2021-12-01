@@ -1,19 +1,39 @@
-The firmware uses ITM of Cortex-M. When developing I was using a
-debug adapter without SWO pin which means I have to push the ITM
-data to a UART->USB.
+This document describes how I debug, trace and profile this
+firmware.
 
+The firmware uses [ITM of ARM Cortex-M](https://developer.arm.com/documentation/ddi0337/e/BABCCDFD).
+When developing, I was using a debug adapter without SWO pin
+which meant I had to push the ITM data in a UART format, via
+a UART to USB converter.
 
-Start OpenOCD:
+## Debugging
+
+In order to debug, trace or profile you have to start OpenOCD
+server.
 
 ```sh
 openocd -f interface/stlink-v2.cfg -f target/stm32f1x.cfg \
   -c 'tpiu config external uart off 72000000 2000000'
 ```
 
+If you want to step through your program then you should use
+GDB as OpenOCD's client.
+
+```sh
+./toolchain/gcc-arm-none-eabi-9-2020-q2-update/binl/arm-none-eabi-gdb-py \
+  -ex 'target extended-remote localhost:3333' src/magknob.elf
+```
+
+`target extended-remote localhost:3333` means you've connected
+to the OpenOCD. [Commands specific for OpenOCD](https://openocd.org/doc/html/General-Commands.html)
+(plus [these](https://openocd.org/doc/html/Architecture-and-Core-Commands.html))
+can be run from GDB by starting the command with the `monitor`
+keyword.
+
 ## Profiling
 
-All the *telnet* commands can be done in the GDB by prepending the
-commands with `monitor`.
+Executing OpenOCD's commands in the *telnet* session don't
+require the `monitor` keyword.
 In order to sample PC for performance measurements:
 
 ```sh
