@@ -51,7 +51,7 @@ char print_buf[PRINT_BUF_SIZE] __attribute__((aligned(4)));
 // The is 8 bidirectional endpoints which means addresses 0x80 - 0x87 should
 // be valid.
 #define ENDPOINT_ADDRESS (0x81)
-#define ENDPOINT_MAX_SIZE  (32)
+#define ENDPOINT_MAX_SIZE  (16)
 
 typedef enum Usb_state_e {
   USB_UNINITILIZED = 0,
