@@ -13,6 +13,8 @@
 #include <libopencm3/usb/usbd.h>
 #include <libopencm3/usb/hid.h>
 
+#include <libopencm3/stm32/st_usbfs.h>
+
 #include "printf.h"
 #include "board.h"
 #include "version.h"
@@ -248,6 +250,13 @@ static void hid_set_config(usbd_device *dev, uint16_t wValue)
         USB_REQ_TYPE_STANDARD | USB_REQ_TYPE_INTERFACE,
         USB_REQ_TYPE_TYPE | USB_REQ_TYPE_RECIPIENT,
         hid_control_request);
+}
+
+static uint16_t usb_get_frame_number(void)
+{
+  // This increments on every frame sent by the host - updated on SOF interrupt.
+  uint16_t fnr_fn = (*USB_FNR_REG) & USB_FNR_FN;
+  return fnr_fn;
 }
 
 //
