@@ -349,8 +349,6 @@ static int encoder_pos_prev = 0;
 static void controller_state_to_report(composite_report_t* const cr)
 {
   int encoder_pos = board_encoder_get_counter();
-  (void)encoder_pos;
-  (void)cr;
 
   // TODO(michalc): move this out from here
   {
@@ -375,26 +373,31 @@ static void controller_state_to_report(composite_report_t* const cr)
 
   cr->report_id = 1;
 
+  int8_t rot_dir = 0;
+
   if (encoder_pos < encoder_pos_prev) {
     //snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
     //TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = MEDIA_MASK_VOL_UP;
+    rot_dir = 1;
   }
   else if (encoder_pos > encoder_pos_prev) {
     //snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
     //TRACE_PRINT(0, print_buf);
 
-    cr->media.mask = MEDIA_MASK_VOL_DOWN;
+    rot_dir = -1;
   }
 
   // Reverse behavior for two edge cases.
   if (encoder_pos_prev == ENCODER_WRAP_VALUE && encoder_pos == 0) {
-    cr->media.mask = MEDIA_MASK_VOL_DOWN;
+    rot_dir = -1;
   }
   else if (encoder_pos_prev == 0 && encoder_pos == ENCODER_WRAP_VALUE) {
-    cr->media.mask = MEDIA_MASK_VOL_UP;
+    rot_dir = 1;
   }
+
+  if (rot_dir == 1) cr->media.mask = MEDIA_MASK_VOL_UP;
+  if (rot_dir == -1) cr->media.mask = MEDIA_MASK_VOL_DOWN;
 
   encoder_pos_prev = encoder_pos;
 }
