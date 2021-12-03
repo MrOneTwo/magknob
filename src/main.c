@@ -375,7 +375,7 @@ struct composite_report_t {
       uint8_t modifiers;
       uint8_t reserved;
       uint8_t keys_down[6];
-      uint8_t leds;
+      //uint8_t leds; // not part of the report atm
     } __attribute__((packed)) keyboard;
   };
 } __attribute__((packed));
@@ -451,10 +451,8 @@ void sys_tick_handler(void)
   composite_report_t report = {};
   controller_state_to_report(&report);
 
-
-  // Size should be data without the report_id byte.
   // For Bluepill board this resolves to st_usbfs_ep_write_packet.
-  usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(struct composite_report_t) - 1);
+  usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(struct composite_report_t));
 
   systick_counter += 1;
 }
