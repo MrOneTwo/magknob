@@ -346,6 +346,9 @@ static int encoder_pos_prev = 0;
 #define MEDIA_MASK_VOL_DOWN (0x40)
 #define MEDIA_MASK_VOL_UP   (0x20)
 
+#define REPORT_MEDIA_ID    (1)
+#define REPORT_KEYBOARD_ID (2)
+
 static void controller_state_to_report(void* const cr_data)
 {
   int encoder_pos = board_encoder_get_counter();
