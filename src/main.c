@@ -380,15 +380,9 @@ static void controller_state_to_report(void* const cr_data)
   int8_t rot_dir = 0;
 
   if (encoder_pos < encoder_pos_prev) {
-    //snprintf(print_buf, PRINT_BUF_SIZE, "<< \r\n", encoder_pos, encoder_pos_prev);
-    //TRACE_PRINT(0, print_buf);
-
     rot_dir = 1;
   }
   else if (encoder_pos > encoder_pos_prev) {
-    //snprintf(print_buf, PRINT_BUF_SIZE, ">> \r\n", encoder_pos, encoder_pos_prev);
-    //TRACE_PRINT(0, print_buf);
-
     rot_dir = -1;
   }
 
