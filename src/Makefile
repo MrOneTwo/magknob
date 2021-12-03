@@ -35,7 +35,7 @@ OPT_FLAGS ?= -O3
 # -MD - generate dependencies and compile
 # -Wno-incompatible-pointer-types
 CFLAGS := -mcpu=cortex-m3 -mthumb
-CFLAGS += -Wall -Wextra -Werror -Wno-char-subscripts -Wno-unused-but-set-variable
+CFLAGS += -Wall -Wextra -Werror -Wno-char-subscripts -Wno-unused-but-set-variable -Wno-unused-function
 CFLAGS += -DSTM32F1 -DDISCOVERY_STLINK $(INCLUDE_PATHS)
 CFLAGS += -std=gnu11 -fstack-usage
 CFLAGS += $(OPT_FLAGS) -g3
