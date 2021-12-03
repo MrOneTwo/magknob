@@ -163,7 +163,7 @@ const struct usb_endpoint_descriptor hid_endpoint = {
   .bDescriptorType = USB_DT_ENDPOINT,
   .bEndpointAddress = ENDPOINT_ADDRESS,   // bit 7 is direction 0 = OUT, 1 = IN
   .bmAttributes = USB_ENDPOINT_ATTR_INTERRUPT,
-  .wMaxPacketSize = 16,                   //
+  .wMaxPacketSize = ENDPOINT_MAX_SIZE,    //
   .bInterval = 0x0a,                      // polling interval in miliseconds (0x0a = 10 ms)
   .extra = (void*)0,
   .extralen = 0,
