@@ -43,6 +43,11 @@ char print_buf[PRINT_BUF_SIZE] __attribute__((aligned(4)));
 //  USB
 //
 
+// Endpoint address should start with 8 (0b10000000). The rest of the bits
+// map to a EP register (0x4000_0000 (APB1) + 0x5c00 + EP). Not the same as
+// packet buffer memory location which live in the 0x4000_6000 space.
+// The is 8 bidirectional endpoints which means addresses 0x80 - 0x87 should
+// be valid.
 #define ENDPOINT_ADDRESS (0x81)
 
 typedef enum Usb_state_e {
@@ -333,6 +338,8 @@ int main(void)
     //   TRACE_PRINT(0, print_buf);
     // }
 
+    // This function first reads the USB_ISTR_REG to determine what's there to handle.
+    // It might be a reset, ctr (correct transfer), suspend, wakeup, sof (start of frame).
     usbd_poll(usbd_dev);
   }
 }
