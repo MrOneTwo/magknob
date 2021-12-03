@@ -410,6 +410,8 @@ void sys_tick_handler(void)
   composite_report_t report = {};
   controller_state_to_report(&report);
 
+
+  // Curiously it doesn't work with `sizeof(report.media)`.
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
 
   systick_counter += 1;
