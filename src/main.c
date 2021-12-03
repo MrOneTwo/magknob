@@ -413,6 +413,7 @@ void sys_tick_handler(void)
 
 
   // Size should be data without the report_id byte.
+  // For Bluepill board this resolves to st_usbfs_ep_write_packet.
   usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(struct composite_report_t) - 1);
 
   systick_counter += 1;
