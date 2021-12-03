@@ -375,7 +375,7 @@ static void controller_state_to_report(void* const cr_data)
     //TRACE_PRINT(0, print_buf);
   }
 
-  cr->report_id = 1;
+  cr->report_id = REPORT_MEDIA_ID;
 
   int8_t rot_dir = 0;
 
@@ -418,8 +418,8 @@ void sys_tick_handler(void)
   controller_state_to_report(&report);
 
 
-  // Curiously it doesn't work with `sizeof(report.media)`.
-  usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(report.keyboard));
+  // Size should be data without the report_id byte.
+  usbd_ep_write_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)&report, sizeof(struct composite_report_t) - 1);
 
   systick_counter += 1;
 }
