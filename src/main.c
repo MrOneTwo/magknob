@@ -318,6 +318,21 @@ int main(void)
 
   while (1)
   {
+    // I don't know why reading the packet always returns zero. I thought the
+    // usbd_poll polls that data out so there should be a moment when I can
+    // read that data before it gets sent.
+    // {
+    //   uint8_t pm[12] = {};
+    //   int count = usbd_ep_read_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)pm, 8);
+    //   snprintf(print_buf, PRINT_BUF_SIZE, "usb buf %x %x %x %x\r\n"
+    //                                       "        %x %x %x %x\r\n"
+    //                                       "        %x %x %x %x %d\r\n",
+    //     pm[0], pm[1], pm[2], pm[3],
+    //     pm[4], pm[5], pm[6], pm[7],
+    //     pm[8], pm[9], pm[10], pm[11], count);
+    //   TRACE_PRINT(0, print_buf);
+    // }
+
     usbd_poll(usbd_dev);
   }
 }
