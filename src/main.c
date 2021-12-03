@@ -242,8 +242,24 @@ hid_control_request(usbd_device *dev,
 static void usb_rx_cb(usbd_device* usbd_dev, uint8_t ep)
 {
   (void)usbd_dev;
-  snprintf(print_buf, PRINT_BUF_SIZE, "ep: %d\r\n", ep);
-  TRACE_PRINT(0, print_buf);
+  (void)ep;
+
+  // I'm not getting anything here. That might be because it's an interrupt
+  // endpoint and there is no data to receive...?
+  // {
+  //   uint8_t pm[ENDPOINT_MAX_SIZE] = {};
+  //   usbd_ep_read_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)pm, ENDPOINT_MAX_SIZE);
+  //   snprintf(print_buf, PRINT_BUF_SIZE, "usb buf %x %x %x %x\r\n"
+  //                                       "        %x %x %x %x\r\n"
+  //                                       "        %x %x %x %x\r\n"
+  //                                       "        %x %x %x %x\r\n",
+  //     pm[0], pm[1], pm[2], pm[3],
+  //     pm[4], pm[5], pm[6], pm[7],
+  //     pm[8], pm[9], pm[10], pm[11],
+  //     pm[12], pm[13], pm[14], pm[15]
+  //   );
+  //   TRACE_PRINT(0, print_buf);
+  // }
 }
 
 static void hid_set_config(usbd_device *dev, uint16_t wValue)
@@ -340,21 +356,6 @@ int main(void)
 
   while (1)
   {
-    // I don't know why reading the packet always returns zero. I thought the
-    // usbd_poll polls that data out so there should be a moment when I can
-    // read that data before it gets sent.
-    // {
-    //   uint8_t pm[12] = {};
-    //   int count = usbd_ep_read_packet(usbd_dev, ENDPOINT_ADDRESS, (void*)pm, 8);
-    //   snprintf(print_buf, PRINT_BUF_SIZE, "usb buf %x %x %x %x\r\n"
-    //                                       "        %x %x %x %x\r\n"
-    //                                       "        %x %x %x %x %d\r\n",
-    //     pm[0], pm[1], pm[2], pm[3],
-    //     pm[4], pm[5], pm[6], pm[7],
-    //     pm[8], pm[9], pm[10], pm[11], count);
-    //   TRACE_PRINT(0, print_buf);
-    // }
-
     // This function first reads the USB_ISTR_REG to determine what's there to handle.
     // It might be a reset, ctr (correct transfer), suspend, wakeup, sof (start of frame).
     usbd_poll(usbd_dev);
