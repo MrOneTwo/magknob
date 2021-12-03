@@ -45,7 +45,7 @@
 #define KEYBD_9                 (0x26)
 #define KEYBD_0                 (0x27)
 #define KEYBD_RETURN            (0x28)
-#define KEYBD_ENTER             (0x29)
+#define KEYBD_ESC               (0x29)
 #define KEYBD_DELETE            (0x2A)
 #define KEYBD_TAB               (0x2B)
 #define KEYBD_SPACE             (0x2C)
@@ -56,7 +56,7 @@
 #define KEYBD_BACK_SLASH        (0x31)
 #define KEYBD_HASH              (0x32)
 #define KEYBD_SEMICOLON         (0x33)
-#define KEYBD_QUOTE             (0x34)
+#define KEYBD_QUOTE             (0x34) // '
 #define KEYBD_GRAVE             (0x35)
 #define KEYBD_COMMA             (0x36)
 #define KEYBD_DOT               (0x37)
