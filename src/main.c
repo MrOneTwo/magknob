@@ -51,6 +51,7 @@ char print_buf[PRINT_BUF_SIZE] __attribute__((aligned(4)));
 // The is 8 bidirectional endpoints which means addresses 0x80 - 0x87 should
 // be valid.
 #define ENDPOINT_ADDRESS (0x81)
+#define ENDPOINT_MAX_SIZE  (32)
 
 typedef enum Usb_state_e {
   USB_UNINITILIZED = 0,
@@ -238,12 +239,19 @@ hid_control_request(usbd_device *dev,
   return USBD_REQ_HANDLED;
 }
 
+static void usb_rx_cb(usbd_device* usbd_dev, uint8_t ep)
+{
+  (void)usbd_dev;
+  snprintf(print_buf, PRINT_BUF_SIZE, "ep: %d\r\n", ep);
+  TRACE_PRINT(0, print_buf);
+}
+
 static void hid_set_config(usbd_device *dev, uint16_t wValue)
 {
   (void)wValue;
   (void)dev;
 
-  usbd_ep_setup(dev, ENDPOINT_ADDRESS, USB_ENDPOINT_ATTR_INTERRUPT, 4, NULL);
+  usbd_ep_setup(dev, ENDPOINT_ADDRESS, USB_ENDPOINT_ATTR_INTERRUPT, ENDPOINT_MAX_SIZE, usb_rx_cb);
 
   usbd_register_control_callback(
         dev,
