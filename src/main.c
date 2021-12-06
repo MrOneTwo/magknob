@@ -414,8 +414,6 @@ static void controller_state_to_report(composite_report_t * const cr)
     //TRACE_PRINT(0, print_buf);
   }
 
-  cr->report_id = REPORT_MEDIA_ID;
-
   int8_t rot_dir = 0;
 
   if (encoder_pos < encoder_pos_prev) {
@@ -435,6 +433,7 @@ static void controller_state_to_report(composite_report_t * const cr)
 
   if (rot_dir == 1) cr->media.mask = MEDIA_MASK_VOL_UP;
   if (rot_dir == -1) cr->media.mask = MEDIA_MASK_VOL_DOWN;
+  cr->report_id = REPORT_MEDIA_ID;
 
   encoder_pos_prev = encoder_pos;
 }
