@@ -36,3 +36,6 @@ clean:
 	
 clean_all: clean
 	$(Q)$(MAKE) $(MFLAGS) -C libopencm3 clean
+
+listing: firmware
+	$(_TOOLCHAIN_PATH)/arm-none-eabi-objdump -DSz src/magknob.elf > src/magknob.lst
