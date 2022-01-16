@@ -1,0 +1,16 @@
+image: alpine/edge
+packages:
+  - wget
+  - xz
+  - cmake
+  - just
+  # alpine is musl. Without this arm-none-eabi binaries don't work. You can
+  # see that by running `ldd arm-none-eabi-gcc`.
+  - gcompat
+sources:
+  - https://git.sr.ht/~mronetwo/magknob
+tasks:
+  - setup: |
+      just magknob/setup_toolchain
+  - build: |
+      cd magknob && make
