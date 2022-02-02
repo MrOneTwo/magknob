@@ -1,3 +1,5 @@
+[![builds.sr.ht status](https://builds.sr.ht/~mronetwo.svg)](https://builds.sr.ht/~mronetwo?)
+
 # MagKnob
 
 This project is a knob for controlling volume (or anything that a USB keyboard can).
