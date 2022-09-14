@@ -1,3 +1,7 @@
+/*
+ * Documentation for USB HID https://www.usb.org/sites/default/files/documents/hid1_11.pdf
+ */
+
 #include <libopencm3/cm3/memorymap.h>
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/cm3/scs.h>
@@ -225,6 +229,10 @@ hid_control_request(usbd_device *dev,
   (void)complete;
   (void)dev;
 
+  // The 0-4 bits of bmRequestType indicate whether the requested descriptor is
+  // associated with the device, interface, endpoint or other.
+  // The wValue field specifies the Descriptor Type in the high byte and the
+  // Descriptor Index in the low byte.
   if((req->bmRequestType != 0x81) ||
      (req->bRequest != USB_REQ_GET_DESCRIPTOR) ||
      (req->wValue != 0x2200))
