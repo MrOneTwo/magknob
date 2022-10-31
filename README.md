@@ -1,4 +1,4 @@
-[![builds.sr.ht status](https://builds.sr.ht/~mronetwo.svg)](https://builds.sr.ht/~mronetwo?)
+[![builds.sr.ht status](https://builds.sr.ht/~mronetwo/magknob.svg)](https://builds.sr.ht/~mronetwo/magknob?)
 
 # MagKnob
 

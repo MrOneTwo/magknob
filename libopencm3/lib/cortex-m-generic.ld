@@ -50,8 +50,10 @@ SECTIONS
 		. = ALIGN(4);
 	} >rom
 
-	/* C++ Static constructors/destructors, also used for __attribute__
-	 * ((constructor)) and the likes */
+	/*
+	 * C++ Static constructors/destructors, also used for __attribute__
+	 * ((constructor)) and the likes.
+	 */
 	.preinit_array : {
 		. = ALIGN(4);
 		__preinit_array_start = .;
