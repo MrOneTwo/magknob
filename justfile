@@ -11,17 +11,17 @@ flash fw="src/magknob.bin":
   st-flash write {{fw}} 0x08000000
 
 # Fetch the gcc-arm-none-eabi toolchain.
-setup_toolchain: _download_toolchain _unpack_toolchain
+setup_toolchain: _unpack_toolchain
+
+# Unpack the toolchain archive.
+_unpack_toolchain: _download_toolchain
+  cd {{TOOLCHAIN_DEST_DIR}} && tar xj -f {{TOOLCHAIN_ARCHIVE_NAME}}
+  rm {{TOOLCHAIN_DEST_DIR}}/{{TOOLCHAIN_ARCHIVE_NAME}}
 
 # Download the toolchain archive.
 _download_toolchain:
   mkdir -p toolchain
   wget -q -O '{{TOOLCHAIN_DEST_DIR}}/{{TOOLCHAIN_ARCHIVE_NAME}}' '{{TOOLCHAIN_URL}}'
-
-# Unpack the toolchain archive.
-_unpack_toolchain:
-  cd {{TOOLCHAIN_DEST_DIR}} && tar xj -f {{TOOLCHAIN_ARCHIVE_NAME}}
-  rm {{TOOLCHAIN_DEST_DIR}}/{{TOOLCHAIN_ARCHIVE_NAME}}
 
 TRACECLKIN := '8000000'
 CPU_CLOCK := '72000000'
